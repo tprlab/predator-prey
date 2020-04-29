@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="/socket.io/socket.io.js"></script>
+</head>
+<body>
+    <canvas id="canvas" width="800" height="600"></canvas>
+    <a id="download" href=""></a>
+    <script src="src/ppmvc.js"></script> 
+    <script>
+      var canvas = document.getElementById('canvas');
+      var rect = {x : 0, y : 0, width : canvas.width, height : canvas.height}
+      var view = new PredPreyView(canvas, rect)
+      view.redraw()
+      var ctrl = new PredPreyCtrl(view)
+
+      function downloadCanvas(link, canvasId, filename) {
+        link.href = document.getElementById(canvasId).toDataURL();
+        link.download = filename;
+      }
+
+      document.getElementById('download').addEventListener('click', function() {
+        downloadCanvas(this, 'canvas', 'test.png');
+      }, false);
+
+    </script>
+
+</body>
+</html>
