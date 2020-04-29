@@ -1,0 +1,28 @@
+{
+  "name": "predator-prey",
+  "version": "1.0.0",
+  "description": "Predator-prey game with Node.js",
+  "main": "quick_run.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tprlab/predator-prey.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/tprlab/predator-prey/issues"
+  },
+  "homepage": "https://github.com/tprlab/predator-prey#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "jest": "^25.5.0",
+    "socket.io": "^2.3.0"
+  }
+}
