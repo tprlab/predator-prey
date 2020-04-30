@@ -1,11 +1,20 @@
 class ViewSettings {
   static CLR_BK = "green"
   static CLR_DEER = "goldenrod"
+  static CLR_WOLF = "gray"
   static CLR_BK_CHART = "lightgray"
   static CLR_TEXT = "black"
-  static CLR_LINE = "red"
-  static FONT_TEXT = "30px Times New Roman"
+  static CLR_LINE_DEER = "red"
+  static CLR_LINE_WOLF = "blue"
+  static FONT_TEXT = "20px Times New Roman"
 }
+
+
+class Wilds {
+  static DEER = 1
+  static WOLF = 2
+}
+
 
 class ChartView {
 
@@ -24,27 +33,39 @@ class ChartView {
     ctx.fillRect(this.R.x, this.R.y, this.R.width, this.R.height);    
     ctx.fillStyle = ViewSettings.CLR_TEXT
     ctx.font = ViewSettings.FONT_TEXT
-    if (this.data.length > 0) {
-      var last = this.data[this.data.length - 1]
-      var txt = "Time: " + last.x + ", deers: " + last.y
+    if (this.data.length > 0 && this.data[0].length > 0) {
+      var idx = this.data[0].length - 1
+      var last_d = this.data[0][idx]
+      var last_w = this.data[1][idx]
+      var txt = "Time: " + last_d.x + ", deers: " + last_d.y + ", wolves: " + last_w.y
       ctx.fillText(txt, this.R.x + this.R.width / 2, this.R.y + this.R.height / 5);
     }
 
-    ctx.strokeStyle = ViewSettings.CLR_LINE
-    ctx.lineWidth = 2
-    ctx.beginPath();
-    var p0 = this.data[0]
-    this.minY = this.getLineY(p0.y)
-    ctx.moveTo(this.getLineX(p0.x), this.minY)
-    this.data.forEach(p => ctx.lineTo(this.getLineX(p.x), this.getLineY(p.y))) 
-    ctx.stroke();
+    this.draw_line(ctx, this.data[0], ViewSettings.CLR_LINE_DEER)
+    this.draw_line(ctx, this.data[1], ViewSettings.CLR_LINE_WOLF)
 
     if (Math.abs(this.minY - this.R.y) < 5)
       this.ymax += this.ymax / 10
   }
 
-  add_data(t, v) {
-    this.data.push({x : t, y : v})
+  draw_line(ctx, data, clr) {
+    ctx.strokeStyle = clr
+    ctx.lineWidth = 2
+    ctx.beginPath();
+    var p0 = data[0]
+    this.minY = this.getLineY(p0.y)
+    ctx.moveTo(this.getLineX(p0.x), this.minY)
+    data.forEach(p => ctx.lineTo(this.getLineX(p.x), this.getLineY(p.y))) 
+    ctx.stroke();
+  }
+
+  add_data(t, v, p) {
+    if (this.data.length < 1) {
+      this.data[0] = []
+      this.data[1] = []
+    }
+    this.data[0].push({x : t, y : v})
+    this.data[1].push({x : t, y : p})
   }
 
   getLineX(x) {
@@ -90,15 +111,14 @@ class PredPreyView {
     this.chart.init_size({x :0, y : this.H, width : this.W, height : this.R.height - this.H}, chart_ymax)
   }
 
-  draw_objects(ctx, data) {
-    if (!data)
-      return
+  draw_herd(ctx, data, kind, clr) {
+    var herd = data.filter(a => a.kind == kind)
     var q = this.Q
     var q2 = q / 2
 
-    ctx.fillStyle = ViewSettings.CLR_DEER
+    ctx.fillStyle = clr
     ctx.beginPath();
-    data.forEach(a => {
+    herd.forEach(a => {
       var x = a.point[0]
       var y = a.point[1]
       var cx = q * x + q2
@@ -108,7 +128,14 @@ class PredPreyView {
     });
     ctx.closePath()
     ctx.fill()
+  }
 
+  draw_objects(ctx, data) {
+    if (!data)
+      return
+
+    this.draw_herd(ctx, data, Wilds.DEER, ViewSettings.CLR_DEER)
+    this.draw_herd(ctx, data, Wilds.WOLF, ViewSettings.CLR_WOLF)
   }
 }
 
@@ -127,10 +154,12 @@ class PredPreyCtrl {
         self.view.chart.clear()
       }
       self.view.set_data(self.state.map)
-      self.view.chart.add_data(self.state.turn, self.state.map.length)
+
+      var preds = self.state.map.filter(a => a.kind == Wilds.WOLF)
+      self.view.chart.add_data(self.state.turn, self.state.map.length - preds.length, preds.length)
       self.view.redraw()
       self.lastTurn = self.state.turn
-      //document.getElementById('download').click()
+      document.getElementById('download').click()
     })
 
     this.socket.on('info', function(msg){

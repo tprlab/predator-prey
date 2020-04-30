@@ -101,7 +101,8 @@ class SafeWorld {
     this.add_wild(born)
     //console.log("Born", born.id, "by", u.id, "on", this.T)
     this.born.push(born)
+    return true
   }
 }
 
-module.exports = {SafeWorld}
+module.exports = {SafeWorld, Wilds}

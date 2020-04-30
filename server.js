@@ -3,7 +3,8 @@ var app = express();
 var server = require('http').Server(app);
 var io = require('socket.io').listen(server);
 
-const {SafeWorld} = require('./src/safe_world.js');
+//const {SafeWorld} = require('./src/safe_world.js');
+const {CruelWorld} = require('./src/cruel_world.js');
 
  
 app.use(express.static(__dirname + '/public'));
@@ -32,7 +33,8 @@ io.on('connection', function (socket) {
 });
 
 
-world = new SafeWorld(Width, Height)
+//world = new SafeWorld(Width, Height)
+world = new CruelWorld(Width, Height)
 world.start()
 
 setInterval(() => {

@@ -1,9 +1,9 @@
-const {SafeWorld} = require('./src/safe_world.js');
+const {CruelWorld} = require('./src/cruel_world.js');
 
-world = new SafeWorld(20, 20)
+world = new CruelWorld(20, 20)
 world.start()
 
-for (i = 0; i < 100; i++) {
+for (i = 0; i < 50; i++) {
   world.next()
   world.status()
 }
