@@ -34,12 +34,13 @@ io.on('connection', function (socket) {
 
 
 //world = new SafeWorld(Width, Height)
+CruelWorld.WOLF_TIME = 100
 world = new CruelWorld(Width, Height)
 world.start()
 
 setInterval(() => {
   if (world.T >= MaxTime) {
-    world = new SafeWorld(Width, Height)
+    world = new CruelWorld(Width, Height)
     world.start()
   }
   world.next()

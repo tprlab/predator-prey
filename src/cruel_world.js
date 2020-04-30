@@ -100,10 +100,18 @@ class CruelWorld extends SafeWorld {
       //console.log("No place to breed", u)
       return false
     }
+    var preys = spots.map(p => this.GM.get(p)).filter(u => u && u.kind == Wilds.DEER)
+    var preds = spots.map(p => this.GM.get(p)).filter(u => u && u.kind == Wilds.WOLF)
+
+    console.log("Pred/prey", preds.length, preys.length)
+
+    if (preys.length <= preds.length)
+      return false
     spots = spots.filter(p => !this.GM.get(p))
     var spot = _.sample(spots)
     if (!spot)
       return false
+
 
     var born = new Wild(u.kind)
     born.move(spot)
