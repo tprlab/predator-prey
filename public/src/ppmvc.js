@@ -159,7 +159,8 @@ class PredPreyCtrl {
       self.view.chart.add_data(self.state.turn, self.state.map.length - preds.length, preds.length)
       self.view.redraw()
       self.lastTurn = self.state.turn
-      document.getElementById('download').click()
+      //if (self.lastTurn % 100 == 0)
+      //    document.getElementById('download').click()
     })
 
     this.socket.on('info', function(msg){

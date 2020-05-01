@@ -8,7 +8,8 @@ class CruelWorld extends SafeWorld {
 
   static WOLF_TIME = 20
   static HUNGER_TIME = 1
-
+  
+  preds_cnt = 0
   feed_table = {}
 
   add_predator() {
@@ -41,6 +42,7 @@ class CruelWorld extends SafeWorld {
     console.log(this.T, "hunted", this.hunted.length, ",starved:" , this.starved.length)
     var preds = this.GM.get_vals().filter(c => c.kind == Wilds.WOLF)
     console.log(this.T, ": population", this.GM.get_points().length, "predators", preds.length)
+    this.preds_cnt = preds.length
 
 
   }
@@ -75,7 +77,7 @@ class CruelWorld extends SafeWorld {
     if (!preys || preys.length < 1) {
       if (this.T - fed > 2 * CruelWorld.HUNGER_TIME) {
         this.starved.push(pred)
-        console.log("Predator", pred, "starved, last fed:", fed)
+        //console.log("Predator", pred, "starved, last fed:", fed)
         delete this.feed_table[pred.id]
       }
       return
@@ -103,9 +105,7 @@ class CruelWorld extends SafeWorld {
     var preys = spots.map(p => this.GM.get(p)).filter(u => u && u.kind == Wilds.DEER)
     var preds = spots.map(p => this.GM.get(p)).filter(u => u && u.kind == Wilds.WOLF)
 
-    console.log("Pred/prey", preds.length, preys.length)
-
-    if (preys.length <= preds.length)
+    if (preys.length < 1 || preds.length > 0)
       return false
     spots = spots.filter(p => !this.GM.get(p))
     var spot = _.sample(spots)
@@ -120,8 +120,6 @@ class CruelWorld extends SafeWorld {
     this.born.push(born)
     return true
   }
-
-
 }
 
 module.exports = {CruelWorld}

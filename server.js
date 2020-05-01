@@ -39,6 +39,10 @@ world = new CruelWorld(Width, Height)
 world.start()
 
 setInterval(() => {
+  if (world.T > CruelWorld.WOLF_TIME && world.preds_cnt == 0) {
+    world = new CruelWorld(Width, Height)
+    world.start()
+  }
   if (world.T >= MaxTime) {
     world = new CruelWorld(Width, Height)
     world.start()
